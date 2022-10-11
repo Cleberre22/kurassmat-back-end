@@ -30,7 +30,6 @@ class User extends Authenticatable implements JWTSubject
         'city',
         'siretNumber',
         'password',
-
     ];
 
     /**
@@ -70,5 +69,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function contacts()
+    {
+        return $this->belongsToMany('App\Contacts');
     }
 }
