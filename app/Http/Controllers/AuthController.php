@@ -41,23 +41,30 @@ class AuthController extends Controller
 
     public function register(Request $request){
         $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'firstname' => 'required|string|max:100',
+            'lastname' => 'required|string|max:100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'address' => 'required|string|max:200',
+            'postalCode' => 'required|string|max:5',
+            'city' => 'required|string|max:100',
             'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
-            'firstName' => $request->firstName,
-            'lastName' => $request->lastName,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
             'role' => "user",
+            'address' => $request->address,
+            'postalCode' => $request->postalCode,
+            'city' => $request->city,
+            'siretNumber' => $request->siretNumber,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
         $token = Auth::login($user);
         return response()->json([
-            'status' => 'success',
+            'status' => 'login success',
             'message' => 'User created successfully',
             'user' => $user,
             'authorisation' => [
@@ -72,7 +79,7 @@ class AuthController extends Controller
         Auth::logout();
         return response()->json([
             'status' => 'success',
-            'message' => 'Successfully logged out',
+            'message' => 'Déconnecté avec succès',
         ]);
     }
 

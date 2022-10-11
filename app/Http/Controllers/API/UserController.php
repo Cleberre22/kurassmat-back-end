@@ -16,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         // On récupère tous les utilisateurs
-        $users = User::all();
+        $users = User::orderByDesc('created_at')->get();
         // On retourne les informations des utilisateurs en JSON
         return response()->json($users);
     }
@@ -40,10 +40,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        // dd($user->id);
-        $user =  User::whereId($user->id)->firstOrFail();
-         // On retourne les informations des utilisateurs en JSON
-         return response()->json($user);
+        // On retourne les informations des utilisateurs en JSON
+        return response()->json($user);
     }
 
     /**
@@ -55,7 +53,29 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $this->validate($request, [
+            'firstname' => 'required|string|max:100',
+            'lastname' => 'required|string|max:100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'address' => 'required|string|max:200',
+            'postalCode' => 'required|string|max:5',
+            'city' => 'required|string|max:100',
+        ]);
+        // On modifie l'utilisateur
+        $user->update([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'role' => "user",
+            'address' => $request->address,
+            'postalCode' => $request->postalCode,
+            'city' => $request->city,
+            'siretNumber' => $request->siretNumber,
+            'email' => $request->email,
+        ]);
+        // On retourne les informations du sondage modifié en JSON
+        return response()->json([
+            'status' => 'Profil mis à jour avec succès'
+        ]);
     }
 
     /**
@@ -66,6 +86,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        // On supprime le message de contact
+        $user->delete();
+        // On retourne la réponse JSON
+        return response()->json([
+            'status' => 'Profil supprimé avec succès'
+        ]);
     }
 }

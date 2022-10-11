@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\ContactController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -13,13 +14,19 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('current-user', 'currentUser');
 });
 
-Route::controller(UserController::class)->group(function () {
-    Route::get('users', 'index');
-    Route::post('user', 'store');
-    Route::get('user/{id}', 'show');
-    Route::put('user/{id}', 'update');
-    Route::delete('user/{id}', 'destroy');
-});
+// Route::controller(UserController::class)->group(function () {
+//     Route::get('users', 'index');
+//     Route::post('user', 'store');
+//     Route::get('user/{id}', 'show');
+//     Route::put('user/{id}', 'update');
+//     Route::delete('user/{id}', 'destroy');
+// });
+
+Route::apiResource("users", UserController::class);
+
+Route::apiResource("contacts", ContactController::class);
+
+
 
 //EXEMPLE
 
