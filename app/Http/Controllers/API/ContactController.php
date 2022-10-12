@@ -58,8 +58,6 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
-        // $contacts =  Contacts::whereId($contacts->id)->firstOrFail();
-
         // On retourne les informations d'un message de contact' en JSON
         return response()->json($contact);
     }

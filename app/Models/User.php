@@ -75,4 +75,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany('App\Contacts');
     }
+
+    public function children()
+    {
+        return $this->belongsToMany(Child::class);
+    }
 }

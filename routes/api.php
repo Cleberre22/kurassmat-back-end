@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\ChildController;
 use App\Http\Controllers\API\ContactController;
 
 Route::controller(AuthController::class)->group(function () {
@@ -25,9 +26,9 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::apiResource("users", UserController::class);
 
+Route::apiResource("childs", ChildController::class);
+
 Route::apiResource("contacts", ContactController::class);
-
-
 
 //EXEMPLE
 
