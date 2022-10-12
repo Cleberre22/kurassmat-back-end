@@ -19,10 +19,11 @@ return new class extends Migration
             $table->string('lastname', 100);
             $table->string('role', 100);
             $table->string('email', 100)->unique();
-            $table->string('address', 200);
-            $table->string('postalCode', 5);
-            $table->string('city', 100);
+            $table->string('address', 200)->nullable();
+            $table->string('postalCode', 5)->nullable();
+            $table->string('city', 100)->nullable();
             $table->string('siretNumber', 14)->nullable();
+            $table->string('phone', 14)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 60);
             $table->rememberToken();

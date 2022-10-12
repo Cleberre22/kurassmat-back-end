@@ -8,7 +8,8 @@ use App\Http\Controllers\API\ContactController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
-    Route::post('register', 'register');
+    Route::post('registerAssmat', 'registerAssmat');
+    Route::post('registerEmployer', 'registerEmployer');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
     Route::get('current-user', 'currentUser');

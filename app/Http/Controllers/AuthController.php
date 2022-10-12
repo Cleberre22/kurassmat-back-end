@@ -11,7 +11,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login','registerEmployer', 'registerAssmat']]);
     }
 
     public function login(Request $request)
@@ -39,24 +39,53 @@ class AuthController extends Controller
 
     }
 
-    public function register(Request $request){
+     /**
+     * Fonction d'inscription pour l'employeur
+     */
+    public function registerEmployer(Request $request){
         $request->validate([
             'firstname' => 'required|string|max:100',
             'lastname' => 'required|string|max:100',
             'email' => 'required|string|email|max:100|unique:users',
-            'address' => 'required|string|max:200',
-            'postalCode' => 'required|string|max:5',
-            'city' => 'required|string|max:100',
             'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'role' => "user",
-            'address' => $request->address,
-            'postalCode' => $request->postalCode,
-            'city' => $request->city,
+            'role' => "employer",
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $token = Auth::login($user);
+        return response()->json([
+            'status' => 'login success',
+            'message' => 'Employer created successfully',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
+    }
+
+    /**
+     * Fonction d'inscription pour l'assmat
+     */
+    public function registerAssmat(Request $request){
+        $request->validate([
+            'firstname' => 'required|string|max:100',
+            'lastname' => 'required|string|max:100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'siretNumber' => 'required|string|max:14',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::create([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'role' => "assmat",
             'siretNumber' => $request->siretNumber,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -65,7 +94,7 @@ class AuthController extends Controller
         $token = Auth::login($user);
         return response()->json([
             'status' => 'login success',
-            'message' => 'User created successfully',
+            'message' => 'Assmat created successfully',
             'user' => $user,
             'authorisation' => [
                 'token' => $token,
