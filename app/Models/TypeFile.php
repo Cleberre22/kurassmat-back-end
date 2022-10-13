@@ -9,4 +9,9 @@ class TypeFile extends Model
 {
     use HasFactory;
     protected $fillable = ['nameTypeFile'];
+
+    public function files()
+    {
+        return $this->belongsToMany('App\Files');
+    }
 }
