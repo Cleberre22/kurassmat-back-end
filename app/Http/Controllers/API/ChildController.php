@@ -30,7 +30,6 @@ class ChildController extends Controller
 
         // On retourne les informations des utilisateurs en JSON
         return response()->json([
-
             'status' => 'Success',
             'data' => $children,
         ]);
