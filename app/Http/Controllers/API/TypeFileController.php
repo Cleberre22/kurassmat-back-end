@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\TypeFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class TypeFileController extends Controller
 {
@@ -51,13 +52,19 @@ class TypeFileController extends Controller
      * @param  \App\Models\TypeFile  $typeFile
      * @return \Illuminate\Http\Response
      */
-    public function show(TypeFile $typeFile)
+    public function show($id)
     {
+        $typeFile = DB::table('type_files')
+            ->get()
+            ->where("id", $id)
+            ->toArray();
+
          // On retourne les informations d'un type de fichier en JSON
          return response()->json([
             'status' => 'Success',
             'data' => $typeFile,
         ]);
+     
     }
 
     /**
@@ -67,15 +74,14 @@ class TypeFileController extends Controller
      * @param  \App\Models\TypeFile  $typeFile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TypeFile $typeFile)
+    public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'nameTypeFile' => 'required|max:100',
-        ]);
-        // On modifie le type de fichier
-        $typeFile->update([
+        $typeFile = DB::table('type_files')
+        ->where("id", $id)
+        ->update([
             'nameTypeFile' => $request->nameTypeFile,
         ]);
+       
 
         // On retourne les informations du type de fichier modifié en JSON
         return response()->json([
@@ -89,10 +95,13 @@ class TypeFileController extends Controller
      * @param  \App\Models\TypeFile  $typeFile
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TypeFile $typeFile)
+    public function destroy( $id )
     {
         // On supprime le type de fichier
-        $typeFile->delete();
+        $typeFile = DB::table('type_files')
+        ->where("id", $id)
+        ->delete();
+
         // On retourne la réponse JSON
         return response()->json([
             'status' => 'Type de fichier supprimé avec succès'

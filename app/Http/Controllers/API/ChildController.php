@@ -85,8 +85,8 @@ class ChildController extends Controller
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
             ->join('users', 'users.id', '=', 'child_user.user_id')
             ->select('children.*', 'users.*')
-            ->get()
-            ->toArray();
+            ->where('children.id', $child->id)
+            ->get();
 
         // On retourne les informations des utilisateurs en JSON
         return response()->json([
