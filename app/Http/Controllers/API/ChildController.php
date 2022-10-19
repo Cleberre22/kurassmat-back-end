@@ -20,18 +20,19 @@ class ChildController extends Controller
         // On récupère toute les fiches "enfant"
         $children = Child::orderByDesc('created_at')->get();
 
-
-
-
         $children = DB::table('children')
-            ->leftjoin('users', 'users.id', '=', 'children.users_id')
-            ->select('children.*', 'users_id')
+            ->join('child_user', 'children.id', '=', 'child_user.child_id')
+            ->join('users', 'users.id', '=', 'child_user.user_id')
+            ->select('children.*', 'users.*')
             ->get()
             ->toArray();
 
 
         // On retourne les informations des utilisateurs en JSON
-        return response()->json($children);
+        return response()->json([
+            'status' => 'Success',
+            'data' => $children,
+        ]);
     }
 
     /**
@@ -47,6 +48,7 @@ class ChildController extends Controller
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
             'imageChild' => 'required|max:100',
+            'users_id' => 'required',
         ]);
 
         // On crée une nouvelle fiche "enfant"
@@ -57,22 +59,15 @@ class ChildController extends Controller
             'imageChild' => $request->imageChild,
             'users_id' => $request->users_id,
         ]);
-        
-        //Comment remplir une table pivot de façon bien dégueulasse
 
+        //Comment remplir une table pivot 
         //Je récupère mes Users/Employer dans le formulaire
-
         $users = $request->users_id;
-        // dd($users);
-        // dd(count($users));
 
         for ($i = 0; $i < count($users); $i++) {
             $user = User::find($users[$i]);
             $childs->users()->attach($user);
         }
-
-        // $users = User::find([1, 2]);
-        // $childs->users()->attach($users);
 
         // On retourne les informations du nouveau message de contact en JSON
         return response()->json($childs, 201);
@@ -86,8 +81,19 @@ class ChildController extends Controller
      */
     public function show(Child $child)
     {
-        // On retourne les informations d'un message de contact' en JSON
-        return response()->json($child);
+        $child = DB::table('children')
+            ->join('child_user', 'children.id', '=', 'child_user.child_id')
+            ->join('users', 'users.id', '=', 'child_user.user_id')
+            ->select('children.*', 'users.*')
+            ->get()
+            ->toArray();
+
+        // On retourne les informations des utilisateurs en JSON
+        return response()->json([
+
+            'status' => 'Success',
+            'data' => $child,
+        ]);
     }
 
     /**
@@ -104,6 +110,7 @@ class ChildController extends Controller
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
             'imageChild' => 'required|max:100',
+            'users_id' => 'required',
         ]);
         // On modifie la fiche "enfant"
         $child->update([
@@ -111,7 +118,18 @@ class ChildController extends Controller
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
             'imageChild' => $request->imageChild,
+            'users_id' => $request->users_id,
         ]);
+
+        //Comment remplir une table pivot 
+        //Je récupère mes Users/Employer dans le formulaire
+        $users = $request->users_id;
+
+        for ($i = 0; $i < count($users); $i++) {
+            $user = User::find($users[$i]);
+            $child->users()->attach($user);
+        }
+
         // On retourne les informations du sondage modifié en JSON
         return response()->json([
             'status' => 'Fiche "enfant" mise à jour avec succès'

@@ -14,4 +14,9 @@ class Child extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function pictures()
+    {
+        return $this->belongsToMany('App\Pictures');
+    }
 }

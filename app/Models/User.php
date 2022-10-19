@@ -80,4 +80,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Child::class);
     }
+
+    public function files()
+    {
+        return $this->belongsToMany('App\Files');
+    }
 }
