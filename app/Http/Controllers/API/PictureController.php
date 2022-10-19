@@ -36,7 +36,6 @@ class PictureController extends Controller
         $request->validate([
             'namePicture' => 'required|max:100',
             'urlPicture' => 'required|max:100',
-            'childs_id' => 'required',
         ]);
 
         // On crée une nouvelle photo
@@ -64,17 +63,6 @@ class PictureController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Picture  $picture
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Picture $picture)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -84,6 +72,11 @@ class PictureController extends Controller
      */
     public function destroy(Picture $picture)
     {
-        //
+          // On supprime la photo
+       $picture->delete();
+       // On retourne la réponse JSON
+       return response()->json([
+           'status' => 'Supprimé avec succès'
+       ]);
     }
 }

@@ -33,6 +33,7 @@ class FileController extends Controller
             'nameFile' => 'required|max:100',
             'urlFile' => 'required|max:100',
             'type_files_id' => 'required',
+
         ]);
 
         // On crée un nouveau fichier
@@ -40,6 +41,7 @@ class FileController extends Controller
             'nameFile' => $request->nameFile,
             'urlFile' => $request->urlFile,
             'type_files_id' => $request->type_files_id,
+            'childs_id' => $request->childs_id,
             'users_id' => $request->users_id,
         ]);
         // On retourne les informations du nouveau message de contact en JSON
