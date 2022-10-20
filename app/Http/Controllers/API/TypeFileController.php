@@ -81,7 +81,6 @@ class TypeFileController extends Controller
         ->update([
             'nameTypeFile' => $request->nameTypeFile,
         ]);
-       
 
         // On retourne les informations du type de fichier modifié en JSON
         return response()->json([

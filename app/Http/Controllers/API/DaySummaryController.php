@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\DaySummary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class DaySummaryController extends Controller
 {
@@ -29,7 +30,19 @@ class DaySummaryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'contentDaySummary' => 'required',
+            'childs_id' => 'required',
+        ]);
+
+        // On crée un nouveau récapitulatif de journée
+        $daySummarys = DaySummary::create([
+            'contentDaySummary' => $request->contentDaySummary,
+            'childs_id' => $request->childs_id,
+            'users_id' => $request->users_id,
+        ]);
+        // On retourne les informations du nouveau message de contact en JSON
+        return response()->json($daySummarys, 201);
     }
 
     /**
@@ -38,9 +51,15 @@ class DaySummaryController extends Controller
      * @param  \App\Models\DaySummary  $daySummary
      * @return \Illuminate\Http\Response
      */
-    public function show(DaySummary $daySummary)
+    public function show($id)
     {
-        //
+        $daySummary = DB::table('day_summaries')
+        ->get()
+        ->where("id", $id)
+        ->toArray();
+
+         // On retourne les informations d'un message de contact' en JSON
+         return response()->json($daySummary);
     }
 
     /**
@@ -50,9 +69,20 @@ class DaySummaryController extends Controller
      * @param  \App\Models\DaySummary  $daySummary
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, DaySummary $daySummary)
+    public function update(Request $request, $id)
     {
-        //
+        $daySummary = DB::table('day_summaries')
+        ->where("id", $id)
+        ->update([
+            'contentDaySummary' => $request->contentDaySummary,
+            'childs_id' => $request->childs_id,
+            'users_id' => $request->users_id,
+        ]);
+
+        // On retourne les informations du type de fichier modifié en JSON
+        return response()->json([
+            'status' => 'Récapitulatif de journée mis à jour avec succès'
+        ]);
     }
 
     /**
@@ -61,8 +91,16 @@ class DaySummaryController extends Controller
      * @param  \App\Models\DaySummary  $daySummary
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DaySummary $daySummary)
+    public function destroy($id)
     {
-        //
+         // On supprime le récapitulatif de journée
+         $daySummary = DB::table('day_summaries')
+         ->where("id", $id)
+         ->delete();
+ 
+         // On retourne la réponse JSON
+         return response()->json([
+             'status' => 'Récapitulatif de journée supprimé avec succès'
+         ]);
     }
 }

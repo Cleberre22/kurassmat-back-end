@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ChildController;
 use App\Http\Controllers\API\PersonToContactController;
+use App\Http\Controllers\API\DaySummaryController;
 use App\Http\Controllers\API\TypeFileController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\PictureController;
@@ -33,6 +34,8 @@ Route::apiResource("users", UserController::class);
 Route::apiResource("childs", ChildController::class);
 
 Route::apiResource("persontocontact", PersonToContactController::class);
+
+Route::apiResource("daysummary", DaySummaryController::class);
 
 Route::apiResource("typefiles", TypeFileController::class);
 
