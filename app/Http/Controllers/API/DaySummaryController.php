@@ -15,7 +15,10 @@ class DaySummaryController extends Controller
      */
     public function index()
     {
-        //
+         // On récupère tous les récapitulatifs de journée
+         $daySummarys = DaySummary::orderByDesc('created_at')->get();
+         // On retourne les informations des utilisateurs en JSON
+         return response()->json($daySummarys);
     }
 
     /**

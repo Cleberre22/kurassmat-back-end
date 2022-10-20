@@ -23,7 +23,11 @@ class ChildController extends Controller
         $children = DB::table('children')
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
             ->join('users', 'users.id', '=', 'child_user.user_id')
-            ->select('children.*', 'users.*')
+
+            ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
+            ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
+
+            ->select('children.*', 'users.*', 'person_to_contacts.*')
             ->get()
             ->toArray();
 
@@ -84,11 +88,16 @@ class ChildController extends Controller
         $child = DB::table('children')
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
             ->join('users', 'users.id', '=', 'child_user.user_id')
-            ->select('children.*', 'users.*')
+
+            ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
+            ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
+            
+
+            ->select('children.*', 'users.*', 'person_to_contacts.*')
             ->where('children.id', $child->id)
             ->get();
 
-        // On retourne les informations des utilisateurs en JSON
+        // On retourne les informations d'une fiche "enfant" en JSON
         return response()->json([
 
             'status' => 'Success',

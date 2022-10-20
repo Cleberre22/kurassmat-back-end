@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PersonToContact extends Model
 {
     use HasFactory;
-    protected $fillable = ['firstnamePerson', 'lastnamePerson', 'addressPerson', 'phonePerson'];
+    protected $fillable = ['firstnamePerson', 'lastnamePerson', 'addressPerson', 'phonePerson', 'child_id'];
 
     public function children()
     {

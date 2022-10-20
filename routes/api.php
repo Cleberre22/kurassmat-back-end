@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ChildController;
+use App\Http\Controllers\API\PersonToContactController;
 use App\Http\Controllers\API\TypeFileController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\PictureController;
@@ -30,6 +31,8 @@ Route::controller(AuthController::class)->group(function () {
 Route::apiResource("users", UserController::class);
 
 Route::apiResource("childs", ChildController::class);
+
+Route::apiResource("persontocontact", PersonToContactController::class);
 
 Route::apiResource("typefiles", TypeFileController::class);
 

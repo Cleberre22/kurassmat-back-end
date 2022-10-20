@@ -33,7 +33,6 @@ class FileController extends Controller
             'nameFile' => 'required|max:100',
             'urlFile' => 'required|max:100',
             'type_files_id' => 'required',
-
         ]);
 
         // On crée un nouveau fichier
