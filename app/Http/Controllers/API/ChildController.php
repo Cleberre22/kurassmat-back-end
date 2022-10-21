@@ -91,7 +91,7 @@ class ChildController extends Controller
 
             ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
             ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
-            
+
 
             ->select('children.*', 'users.*', 'person_to_contacts.*')
             ->where('children.id', $child->id)
@@ -132,11 +132,16 @@ class ChildController extends Controller
 
         //Comment remplir une table pivot 
         //Je récupère mes Users/Employer dans le formulaire
-        $users = $request->users_id;
-
-        for ($i = 0; $i < count($users); $i++) {
-            $user = User::find($users[$i]);
-            $child->users()->attach($user);
+        // Array à fournir pour la méthode sync
+        $updateTabId = array();
+        // Update user pivot
+        $user = $request->users_id;
+        if (!empty($user)) {
+            for ($i = 0; $i < count($user); $i++) {
+                $users = User::find($user[$i]);
+                array_push($updateTabId, $users->id);
+            }
+            $child->users()->sync($updateTabId);
         }
 
         // On retourne les informations du sondage modifié en JSON
