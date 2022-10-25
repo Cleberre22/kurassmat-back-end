@@ -78,7 +78,6 @@ class AuthController extends Controller
             'firstname' => 'required|string|max:100',
             'lastname' => 'required|string|max:100',
             'email' => 'required|string|email|max:100|unique:users',
-            'siretNumber' => 'required|string|max:14',
             'password' => 'required|string|min:8',
         ]);
 
@@ -86,7 +85,6 @@ class AuthController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'role' => "assmat",
-            'siretNumber' => $request->siretNumber,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
