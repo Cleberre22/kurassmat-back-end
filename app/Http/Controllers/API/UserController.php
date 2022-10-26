@@ -53,24 +53,25 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        // dd($user);
         $this->validate($request, [
             'firstname' => 'required|string|max:100',
             'lastname' => 'required|string|max:100',
-            'email' => 'required|string|email|max:100|unique:users',
+            'email' => 'required|string|email|max:100',
             'address' => 'required|string|max:200',
             'postalCode' => 'required|string|max:5',
             'city' => 'required|string|max:100',
+            'phone' => 'required|string|max:100',
         ]);
         // On modifie l'utilisateur
         $user->update([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'role' => "user",
+            'email' => $request->email,
             'address' => $request->address,
             'postalCode' => $request->postalCode,
             'city' => $request->city,
-            'siretNumber' => $request->siretNumber,
-            'email' => $request->email,
+            'phone' => $request->phone,  
         ]);
         // On retourne les informations du sondage modifié en JSON
         return response()->json([
