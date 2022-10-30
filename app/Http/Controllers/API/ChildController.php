@@ -18,7 +18,7 @@ class ChildController extends Controller
     public function index()
     {
         // On récupère toute les fiches "enfant"
-        $children = Child::orderByDesc('created_at')->get();
+        $children = Child::orderBy('lastnameChild')->get();
 
          // $child = DB::table('children')
 
