@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Child;
 use App\Models\User;
+use App\Models\Child;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class ChildController extends Controller
 {
@@ -55,20 +56,43 @@ class ChildController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
-            'imageChild' => 'required|max:100',
+            // 'imageChild' => 'required|max:100',
+            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'users_id' => 'required',
         ]);
+
+        // if ($validator->fails()) 
+        // {
+        //     return redirect()->back()->withInput()->withErrors($validator->errors());
+        // }
+        // $file = $request->file("image")->store("uploads/images");
+         
+
+        $filename = "";
+        if ($request->hasFile('imageChild')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+            $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('imageChild')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
 
         // On crée une nouvelle fiche "enfant"
         $childs = Child::create([
             'firstnameChild' => $request->firstnameChild,
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
-            'imageChild' => $request->imageChild,
+            'imageChild' => $filename,
             'users_id' => $request->users_id,
         ]);
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('firstnameChild', 100);
             $table->string('lastnameChild', 100);
-            $table->date('birthDate');
+            $table->date('birthDate')->format('d/m/Y');
             $table->string('imageChild', 100)->nullable();
             $table->timestamps();
         });
