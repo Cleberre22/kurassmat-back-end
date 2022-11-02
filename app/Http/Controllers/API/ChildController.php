@@ -128,10 +128,10 @@ class ChildController extends Controller
      */
     public function show(Child $child)
     {
-        // $child = DB::table('children')
+        $child = DB::table('children')
 
-            // ->join('child_user', 'children.id', '=', 'child_user.child_id')
-            // ->join('users', 'users.id', '=', 'child_user.user_id')
+            ->join('child_user', 'children.id', '=', 'child_user.child_id')
+            ->join('users', 'users.id', '=', 'child_user.user_id')
 
             // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
             // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
@@ -139,13 +139,13 @@ class ChildController extends Controller
 
             // ->select('children.*', 'users.*', 'person_to_contacts.*')
 
-            // ->select('children.*', 'users.*', 'child_user.*')
+            ->select('children.*', 'users.*', 'child_user.*')
 
-            // ->select('children.id AS Enfant Identifiant', 'children.firstnameChild AS Enfant Prénom', 'children.lastnameChild AS Enfant Nom', 'children.birthDate AS Enfant Date de naissance', 'children.imageChild AS Enfant Avatar', 'users.id AS Utilisateur Identifiant','users.firstname AS Utilisateur Prénom','users.lastname AS Utilisateur Nom','users.role AS Utilisateur Role','users.email AS Utilisateur Email','users.address AS Utilisateur Adresse','users.postalCode AS Utilisateur Code Postal','users.city AS Utilisateur Ville','users.phone AS Utilisateur Téléphone', 'child_user.id AS Identifiant en commun Table Pivot')
+            ->select('children.id AS enfant_identifiant', 'children.firstnameChild AS enfant_prenom', 'children.lastnameChild AS enfant_nom', 'children.birthDate AS enfant_date_de_naissance', 'children.imageChild AS enfant_avatar', 'users.id AS Utilisateur Identifiant','users.firstname AS Utilisateur Prénom','users.lastname AS Utilisateur Nom','users.role AS Utilisateur Role','users.email AS Utilisateur Email','users.address AS Utilisateur Adresse','users.postalCode AS Utilisateur Code Postal','users.city AS Utilisateur Ville','users.phone AS Utilisateur Téléphone', 'child_user.id AS Identifiant en commun Table Pivot')
             
-            // ->where('children.id', $child->id)
+            ->where('children.id', $child->id)
 
-            // ->get();
+            ->get();
 
         // On retourne les informations d'une fiche "enfant" en JSON
         return response()->json([
