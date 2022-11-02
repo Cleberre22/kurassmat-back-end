@@ -60,7 +60,6 @@ class ChildController extends Controller
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
-            // 'imageChild' => 'required|max:100',
             'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'users_id' => 'required',
         ]);
@@ -96,14 +95,26 @@ class ChildController extends Controller
             'users_id' => $request->users_id,
         ]);
 
-        //Comment remplir une table pivot 
+         //Comment remplir une table pivot 
         //Je récupère mes Users/Employer dans le formulaire
         $users = $request->users_id;
 
-        for ($i = 0; $i < count($users); $i++) {
-            $user = User::find($users[$i]);
-            $childs->users()->attach($user);
-        }
+        $users_id = explode(",", $users);
+        
+      //Et le boucle pour les rentrer dans la base de données
+      for ($i = 0; $i < count($users_id); $i++) {
+        $user = User::find($users_id[$i]);
+        $childs->users()->attach($user);
+      }
+
+        //Comment remplir une table pivot 
+        //Je récupère mes Users/Employer dans le formulaire
+        // $users = $request->users_id;
+
+        // for ($i = 0; $i < count($users); $i++) {
+        //     $user = User::find($users[$i]);
+        //     $childs->users()->attach($user);
+        // }
 
         // On retourne les informations du nouveau message de contact en JSON
         return response()->json($childs, 201);
