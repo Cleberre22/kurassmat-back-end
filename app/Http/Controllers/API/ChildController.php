@@ -21,25 +21,25 @@ class ChildController extends Controller
         // On récupère toute les fiches "enfant"
         $children = Child::orderBy('lastnameChild')->get();
 
-         // $child = DB::table('children')
+        // $child = DB::table('children')
 
-            // ->join('child_user', 'children.id', '=', 'child_user.child_id')
-            // ->join('users', 'users.id', '=', 'child_user.user_id')
+        // ->join('child_user', 'children.id', '=', 'child_user.child_id')
+        // ->join('users', 'users.id', '=', 'child_user.user_id')
 
-            // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
-            // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
+        // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
+        // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
 
 
-            // ->select('children.*', 'users.*', 'person_to_contacts.*')
+        // ->select('children.*', 'users.*', 'person_to_contacts.*')
 
-            // ->select('children.*', 'users.*', 'child_user.*')
+        // ->select('children.*', 'users.*', 'child_user.*')
 
-            // ->select('children.id AS Enfant Identifiant', 'children.firstnameChild AS Enfant Prénom', 'children.lastnameChild AS Enfant Nom', 'children.birthDate AS Enfant Date de naissance', 'children.imageChild AS Enfant Avatar', 'users.id AS Utilisateur Identifiant','users.firstname AS Utilisateur Prénom','users.lastname AS Utilisateur Nom','users.role AS Utilisateur Role','users.email AS Utilisateur Email','users.address AS Utilisateur Adresse','users.postalCode AS Utilisateur Code Postal','users.city AS Utilisateur Ville','users.phone AS Utilisateur Téléphone', 'child_user.id AS Identifiant en commun Table Pivot')
-            
-            // ->where('children.id', $child->id)
+        // ->select('children.id AS Enfant Identifiant', 'children.firstnameChild AS Enfant Prénom', 'children.lastnameChild AS Enfant Nom', 'children.birthDate AS Enfant Date de naissance', 'children.imageChild AS Enfant Avatar', 'users.id AS Utilisateur Identifiant','users.firstname AS Utilisateur Prénom','users.lastname AS Utilisateur Nom','users.role AS Utilisateur Role','users.email AS Utilisateur Email','users.address AS Utilisateur Adresse','users.postalCode AS Utilisateur Code Postal','users.city AS Utilisateur Ville','users.phone AS Utilisateur Téléphone', 'child_user.id AS Identifiant en commun Table Pivot')
 
-            // ->get();
-            // ->toArray();
+        // ->where('children.id', $child->id)
+
+        // ->get();
+        // ->toArray();
 
         // On retourne les informations des utilisateurs en JSON
         return response()->json([
@@ -56,7 +56,7 @@ class ChildController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
@@ -69,7 +69,6 @@ class ChildController extends Controller
         //     return redirect()->back()->withInput()->withErrors($validator->errors());
         // }
         // $file = $request->file("image")->store("uploads/images");
-         
 
         $filename = "";
         if ($request->hasFile('imageChild')) {
@@ -95,17 +94,17 @@ class ChildController extends Controller
             'users_id' => $request->users_id,
         ]);
 
-         //Comment remplir une table pivot 
+        //Comment remplir une table pivot 
         //Je récupère mes Users/Employer dans le formulaire
         $users = $request->users_id;
 
         $users_id = explode(",", $users);
-        
-      //Et le boucle pour les rentrer dans la base de données
-      for ($i = 0; $i < count($users_id); $i++) {
-        $user = User::find($users_id[$i]);
-        $childs->users()->attach($user);
-      }
+
+        //Et le boucle pour les rentrer dans la base de données
+        for ($i = 0; $i < count($users_id); $i++) {
+            $user = User::find($users_id[$i]);
+            $childs->users()->attach($user);
+        }
 
         //Comment remplir une table pivot 
         //Je récupère mes Users/Employer dans le formulaire
@@ -141,8 +140,11 @@ class ChildController extends Controller
 
             ->select('children.*', 'users.*', 'child_user.*')
 
-            ->select('children.id AS enfant_identifiant', 'children.firstnameChild AS enfant_prenom', 'children.lastnameChild AS enfant_nom', 'children.birthDate AS enfant_date_de_naissance', 'children.imageChild AS enfant_avatar', 'users.id AS Utilisateur Identifiant','users.firstname AS Utilisateur Prénom','users.lastname AS Utilisateur Nom','users.role AS Utilisateur Role','users.email AS Utilisateur Email','users.address AS Utilisateur Adresse','users.postalCode AS Utilisateur Code Postal','users.city AS Utilisateur Ville','users.phone AS Utilisateur Téléphone', 'child_user.id AS Identifiant en commun Table Pivot')
-            
+             ->select('children.id', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
+
+
+            // ->select('children.id AS id_identifiant', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id AS id_utilisateur', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id AS id_pivot')
+
             ->where('children.id', $child->id)
 
             ->get();
@@ -168,31 +170,43 @@ class ChildController extends Controller
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
-            'imageChild' => 'required|max:100',
-            'users_id' => 'required',
+            // 'imageChild' => 'required|max:100',
+            // 'users_id' => 'required',
         ]);
         // On modifie la fiche "enfant"
         $child->update([
             'firstnameChild' => $request->firstnameChild,
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
-            'imageChild' => $request->imageChild,
-            'users_id' => $request->users_id,
+            // 'imageChild' => $request->imageChild,
+            // 'users_id' => $request->users_id,
         ]);
 
-        //Comment remplir une table pivot 
-        //Je récupère mes Users/Employer dans le formulaire
-        // Array à fournir pour la méthode sync
-        $updateTabId = array();
-        // Update user pivot
-        $user = $request->users_id;
-        if (!empty($user)) {
-            for ($i = 0; $i < count($user); $i++) {
-                $users = User::find($user[$i]);
-                array_push($updateTabId, $users->id);
-            }
-            $child->users()->sync($updateTabId);
-        }
+        // //Comment remplir une table pivot 
+        // //Je récupère mes Users/Employer dans le formulaire
+        // $users = $request->users_id;
+
+        // $users_id = explode(",", $users);
+
+        // //Et le boucle pour les rentrer dans la base de données
+        // for ($i = 0; $i < count($users_id); $i++) {
+        //     $user = User::find($users_id[$i]);
+        //     $child->users()->attach($user);
+        // }
+
+        // //Comment remplir une table pivot 
+        // //Je récupère mes Users/Employer dans le formulaire
+        // // Array à fournir pour la méthode sync
+        // $updateTabId = array();
+        // // Update user pivot
+        // $user = $request->users_id;
+        // if (!empty($user)) {
+        //     for ($i = 0; $i < count($user); $i++) {
+        //         $users = User::find($user[$i]);
+        //         array_push($updateTabId, $users->id);
+        //     }
+        //     $child->users()->sync($updateTabId);
+        // }
 
         // On retourne les informations du sondage modifié en JSON
         return response()->json([
