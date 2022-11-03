@@ -29,6 +29,11 @@ Route::controller(AuthController::class)->group(function () {
 //     Route::delete('user/{id}', 'destroy');
 // });
 
+Route::controller(ChildController::class)->group(function () {
+    Route::put('childs/{id}', 'updateImage');
+});
+
+
 Route::apiResource("users", UserController::class);
 
 Route::apiResource("childs", ChildController::class);

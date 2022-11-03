@@ -214,6 +214,44 @@ class ChildController extends Controller
         ]);
     }
 
+     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Child  $child
+     * @return \Illuminate\Http\Response
+     */
+    public function updateImage(Request $request, Child $child)
+    {
+        $this->validate($request, [
+            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096'
+        ]);
+
+        $filename = "";
+        if ($request->hasFile('imageChild')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+            $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('imageChild')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
+
+        // On modifie la fiche "enfant"
+        $child->updateImage([
+            'imageChild' => $filename
+        ]);
+        // On retourne les informations du sondage modifié en JSON
+        return response()->json([
+            'status' => 'Photo "enfant" mise à jour avec succès'
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
