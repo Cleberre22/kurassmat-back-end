@@ -21,6 +21,14 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('current-user', 'currentUser');
 });
 
+Route::controller(ChildController::class)->group(function () {
+    Route::patch('updateimagechild/{child}', 'updateImageChild');
+    Route::patch('childs/{child}', 'update');
+    Route::get('childs/{child}', 'show');
+    Route::delete('childs/{child}', 'destroy');
+    Route::get('childs', 'index');
+});
+
 // Route::controller(UserController::class)->group(function () {
 //     Route::get('users', 'index');
 //     Route::post('user', 'store');
@@ -36,7 +44,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::apiResource("users", UserController::class);
 
-Route::apiResource("childs", ChildController::class);
+// Route::apiResource("childs", ChildController::class);
 
 Route::apiResource("persontocontact", PersonToContactController::class);
 
