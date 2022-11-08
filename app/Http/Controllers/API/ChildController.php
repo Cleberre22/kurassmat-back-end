@@ -123,23 +123,21 @@ class ChildController extends Controller
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
             ->join('users', 'users.id', '=', 'child_user.user_id')
 
-            ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
+            // ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
 
             // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
             // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
 
-            // ->select('children.*', 'users.*', 'child_user.*', 'day_summaries.*', 'person_to_contacts.*')
+            // ->select('children.', 'users.', 'child_user.', 'day_summaries.', 'person_to_contacts.')
 
-            ->select('children.*', 'users.*', 'child_user.*', 'day_summaries.*')
+            ->select('children.', 'users.', 'child_user.', 'day_summaries.*')
 
-            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id', 'day_summaries.id AS idDaySummary', 'day_summaries.contentDaySummary', 'day_summaries.created_at AS DSCreated_at')
+            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
 
             // ->select('children.id AS id_identifiant', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id AS id_utilisateur', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id AS id_pivot')
 
-            ->orderByDesc('day_summaries.created_at')
-
             ->where('children.id', $child->id)
-            ->limit(1)
+
             ->get();
 
         // On retourne les informations d'une fiche "enfant" en JSON
@@ -197,32 +195,34 @@ class ChildController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Child  $child
+     * @param  \App\Models\Child  $childImage
      * @return \Illuminate\Http\Response
      */
-    public function updateImageChild(Request $request, Child $child)
+    public function childUpdateImage(Request $request, Child $childImage)
     {
-        dd($child);
+        // dd($childImage);
         $this->validate($request, [
-            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096'
+            'lastnameChild' => 'required|max:100',
+            // 'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096'
         ]);
 
-        $filename = "";
-        if ($request->hasFile('imageChild')) {
-            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
-            $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
-            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            // On récupère l'extension du fichier, résultat $extension : ".jpg"
-            $extension = $request->file('imageChild')->getClientOriginalExtension();
-            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
-            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
-            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
-            $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
-        }
+        // $filename = "";
+        // if ($request->hasFile('imageChild')) {
+        //     // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+        //     $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
+        //     $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+        //     // On récupère l'extension du fichier, résultat $extension : ".jpg"
+        //     $extension = $request->file('imageChild')->getClientOriginalExtension();
+        //     // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
+        //     $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+        //     // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+        //     $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
+        // }
 
         // On modifie la fiche "enfant"
-        $child->updateImageChild([
-            'imageChild' => $filename,
+        $childImage->childUpdateImage([
+            'lastnameChild' => $request->lastnameChild,
+            // 'imageChild' => $filename,
         ]);
 
         // On retourne les informations du sondage modifié en JSON
