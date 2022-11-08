@@ -22,9 +22,10 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(ChildController::class)->group(function () {
-    Route::patch('updateimagechild/{child}', 'updateImageChild');
+    Route::patch('childsupdateimage/{child}', 'updateImageChild');
     Route::patch('childs/{child}', 'update');
     Route::get('childs/{child}', 'show');
+    Route::post('childs', 'store');
     Route::delete('childs/{child}', 'destroy');
     Route::get('childs', 'index');
 });

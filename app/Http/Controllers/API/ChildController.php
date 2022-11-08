@@ -106,15 +106,6 @@ class ChildController extends Controller
             $childs->users()->attach($user);
         }
 
-        //Comment remplir une table pivot 
-        //Je récupère mes Users/Employer dans le formulaire
-        // $users = $request->users_id;
-
-        // for ($i = 0; $i < count($users); $i++) {
-        //     $user = User::find($users[$i]);
-        //     $childs->users()->attach($user);
-        // }
-
         // On retourne les informations du nouveau message de contact en JSON
         return response()->json($childs, 201);
     }
@@ -132,7 +123,7 @@ class ChildController extends Controller
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
             ->join('users', 'users.id', '=', 'child_user.user_id')
 
-            // ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
+            ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
 
             // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
             // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
@@ -141,12 +132,14 @@ class ChildController extends Controller
 
             ->select('children.*', 'users.*', 'child_user.*', 'day_summaries.*')
 
-            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
+            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id', 'day_summaries.id AS idDaySummary', 'day_summaries.contentDaySummary', 'day_summaries.created_at AS DSCreated_at')
 
             // ->select('children.id AS id_identifiant', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id AS id_utilisateur', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id AS id_pivot')
 
-            ->where('children.id', $child->id)
+            ->orderByDesc('day_summaries.created_at')
 
+            ->where('children.id', $child->id)
+            ->limit(1)
             ->get();
 
         // On retourne les informations d'une fiche "enfant" en JSON

@@ -21,8 +21,11 @@ class DaySummaryController extends Controller
 
          $daySummarys = DB::table('day_summaries')
          ->join('children', 'children.id', '=', 'day_summaries.childs_id')
-         ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'day_summaries.id', 'day_summaries.contentDaySummary', 'day_summaries.created_at')
+         ->join('users', 'users.id', '=', 'day_summaries.users_id')
+
+         ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'day_summaries.id', 'day_summaries.contentDaySummary', 'day_summaries.created_at', 'users.id AS idUser', 'users.firstname', 'users.lastname')
          ->orderByDesc('day_summaries.created_at')
+        //  ->where('day_summaries.id', $daySummary->id)
          ->get();
  
          // On retourne les informations des utilisateurs en JSON
