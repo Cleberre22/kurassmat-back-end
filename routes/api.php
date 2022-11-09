@@ -23,11 +23,21 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(ChildController::class)->group(function () {
     Route::patch('childUpdateImage/{child}', 'childUpdateImage');
-    Route::patch('childs/{child}', 'update');
-    Route::get('childs/{child}', 'show');
+    Route::get('childIndexAuth/{user}', 'childIndexAuth');
     Route::post('childs', 'store');
-    Route::delete('childs/{child}', 'destroy');
     Route::get('childs', 'index');
+    Route::get('childs/{child}', 'show');
+    Route::patch('childs/{child}', 'update');
+    Route::delete('childs/{child}', 'destroy');
+});
+
+Route::controller(DaySummaryController::class)->group(function () {
+    Route::get('summaryindexChild/{child}', 'SummaryindexChild');
+    Route::post('daysummary', 'store');
+    Route::get('daysummary', 'index');
+    Route::get('daysummary/{daysummary}', 'show');
+    Route::patch('daysummary/{daysummary}', 'update');
+    Route::delete('daysummary/{daysummary}', 'destroy');
 });
 
 // Route::controller(UserController::class)->group(function () {

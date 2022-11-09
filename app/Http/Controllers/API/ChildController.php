@@ -7,6 +7,7 @@ use App\Models\Child;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ChildController extends Controller
@@ -19,7 +20,7 @@ class ChildController extends Controller
     public function index()
     {
         // On récupère toute les fiches "enfant"
-        $children = Child::orderBy('lastnameChild')->get();
+        $children = Child::orderBy('lastnameChild')->orderBy('lastnameChild')->get();
 
         // $child = DB::table('children')
 
@@ -48,6 +49,32 @@ class ChildController extends Controller
         ]);
     }
 
+       /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function childIndexAuth($id)
+    {
+        $children = DB::table('children')
+
+        ->join('child_user', 'children.id', '=', 'child_user.child_id')
+        
+        ->join('users', 'users.id', '=', 'child_user.user_id')
+
+        ->select('children.*', 'users.*', 'child_user.*')
+
+        ->where('child_user.user_id', '=', $id)
+
+        ->get();
+       
+        // On retourne les informations des utilisateurs en JSON
+        return response()->json([
+            'status' => 'Success',
+            'data' => $children,
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -63,12 +90,6 @@ class ChildController extends Controller
             'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'users_id' => 'required',
         ]);
-
-        // if ($validator->fails()) 
-        // {
-        //     return redirect()->back()->withInput()->withErrors($validator->errors());
-        // }
-        // $file = $request->file("image")->store("uploads/images");
 
         $filename = "";
         if ($request->hasFile('imageChild')) {
