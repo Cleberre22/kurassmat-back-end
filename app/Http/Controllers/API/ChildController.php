@@ -22,26 +22,6 @@ class ChildController extends Controller
         // On récupère toute les fiches "enfant"
         $children = Child::orderBy('lastnameChild')->orderBy('lastnameChild')->get();
 
-        // $child = DB::table('children')
-
-        // ->join('child_user', 'children.id', '=', 'child_user.child_id')
-        // ->join('users', 'users.id', '=', 'child_user.user_id')
-
-        // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
-        // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
-
-
-        // ->select('children.*', 'users.*', 'person_to_contacts.*')
-
-        // ->select('children.*', 'users.*', 'child_user.*')
-
-        // ->select('children.id AS Enfant Identifiant', 'children.firstnameChild AS Enfant Prénom', 'children.lastnameChild AS Enfant Nom', 'children.birthDate AS Enfant Date de naissance', 'children.imageChild AS Enfant Avatar', 'users.id AS Utilisateur Identifiant','users.firstname AS Utilisateur Prénom','users.lastname AS Utilisateur Nom','users.role AS Utilisateur Role','users.email AS Utilisateur Email','users.address AS Utilisateur Adresse','users.postalCode AS Utilisateur Code Postal','users.city AS Utilisateur Ville','users.phone AS Utilisateur Téléphone', 'child_user.id AS Identifiant en commun Table Pivot')
-
-        // ->where('children.id', $child->id)
-
-        // ->get();
-        // ->toArray();
-
         // On retourne les informations des utilisateurs en JSON
         return response()->json([
             'status' => 'Success',
@@ -87,7 +67,7 @@ class ChildController extends Controller
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
-            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'users_id' => 'required',
         ]);
 
@@ -143,19 +123,19 @@ class ChildController extends Controller
 
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
             ->join('users', 'users.id', '=', 'child_user.user_id')
-
             // ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
+            // ->join('pictures', 'children.id', '=', 'pictures.childs_id')
+
 
             // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
             // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
 
             // ->select('children.', 'users.', 'child_user.', 'day_summaries.', 'person_to_contacts.')
 
-            ->select('children.', 'users.', 'child_user.', 'day_summaries.*')
+            // ->select('children.', 'users.', 'child_user.', 'day_summaries.*', 'pictures.*')
+            ->select('children.', 'users.', 'child_user.')
 
             ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
-
-            // ->select('children.id AS id_identifiant', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id AS id_utilisateur', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id AS id_pivot')
 
             ->where('children.id', $child->id)
 

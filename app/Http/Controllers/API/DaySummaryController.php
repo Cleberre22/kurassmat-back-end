@@ -40,18 +40,6 @@ class DaySummaryController extends Controller
     public function SummaryindexChild($id)
     {
         // On récupère tous les récapitulatifs de journée
-        //  $daySummarys = DaySummary::orderByDesc('day_summaries.created_at')->get();
-
-        //  $daySummarys = DB::table('day_summaries')
-        //  ->join('children', 'children.id', '=', 'day_summaries.childs_id')
-        //  ->join('users', 'users.id', '=', 'day_summaries.users_id')
-
-        //  ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'day_summaries.id', 'day_summaries.contentDaySummary', 'day_summaries.created_at', 'users.id AS idUser', 'users.firstname', 'users.lastname')
-        //  ->orderByDesc('day_summaries.created_at')
-        // //  ->where('day_summaries.id', $daySummary->id)
-        //  ->get();
-
-
         $daySummarys = DB::table('day_summaries')
 
             ->join('children', 'children.id', '=', 'day_summaries.childs_id')

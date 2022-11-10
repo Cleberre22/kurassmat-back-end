@@ -32,12 +32,21 @@ Route::controller(ChildController::class)->group(function () {
 });
 
 Route::controller(DaySummaryController::class)->group(function () {
-    Route::get('summaryindexChild/{child}', 'SummaryindexChild');
+    Route::get('daysummaryindexChild/{child}', 'SummaryindexChild');
     Route::post('daysummary', 'store');
     Route::get('daysummary', 'index');
     Route::get('daysummary/{daysummary}', 'show');
     Route::patch('daysummary/{daysummary}', 'update');
     Route::delete('daysummary/{daysummary}', 'destroy');
+});
+
+Route::controller(PictureController::class)->group(function () {
+    Route::get('picturesIndexChild/{child}', 'PictureindexChild');
+    Route::post('pictures', 'store');
+    // Route::get('daysummary', 'index');
+    // Route::get('daysummary/{daysummary}', 'show');
+    // Route::patch('daysummary/{daysummary}', 'update');
+    // Route::delete('daysummary/{daysummary}', 'destroy');
 });
 
 // Route::controller(UserController::class)->group(function () {
@@ -52,29 +61,17 @@ Route::controller(DaySummaryController::class)->group(function () {
 //     Route::put('childs/{id}', 'updateImage');
 // });
 
+// Route::apiResource("pictures", PictureController::class);
+
+// Route::apiResource("daysummary", DaySummaryController::class);
 
 Route::apiResource("users", UserController::class);
 
-// Route::apiResource("childs", ChildController::class);
-
 Route::apiResource("persontocontact", PersonToContactController::class);
-
-Route::apiResource("daysummary", DaySummaryController::class);
 
 Route::apiResource("typefiles", TypeFileController::class);
 
 Route::apiResource("files", FileController::class);
 
-Route::apiResource("pictures", PictureController::class);
-
 Route::apiResource("contacts", ContactController::class);
 
-//EXEMPLE
-
-// Route::controller(TodoController::class)->group(function () {
-//     Route::get('todos', 'index');
-//     Route::post('todo', 'store');
-//     Route::get('todo/{id}', 'show');
-//     Route::put('todo/{id}', 'update');
-//     Route::delete('todo/{id}', 'destroy');
-// }); 

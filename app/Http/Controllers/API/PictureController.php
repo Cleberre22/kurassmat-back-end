@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Picture;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class PictureController extends Controller
 {
@@ -25,6 +26,30 @@ class PictureController extends Controller
                ]);
     }
 
+       /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function PictureindexChild($id)
+    {
+        // On récupère tous les récapitulatifs de journée
+        $pictures = DB::table('pictures')
+
+            ->join('children', 'children.id', '=', 'pictures.childs_id')
+
+            ->select('children.*', 'pictures.*')
+
+            ->where('pictures.childs_id', '=', $id)
+
+            ->orderByDesc('pictures.created_at')
+
+            ->get();
+
+        // On retourne les informations des utilisateurs en JSON
+        return response()->json($pictures);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -34,14 +59,31 @@ class PictureController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'urlPicture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:3048',
             'namePicture' => 'required|max:100',
-            'urlPicture' => 'required|max:100',
+            'childs_id' => 'required'
         ]);
+
+        $filename = "";
+        if ($request->hasFile('urlPicture')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+            $filenameWithExt = $request->file('urlPicture')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('urlPicture')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('urlPicture')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
 
         // On crée une nouvelle photo
         $pictures = Picture::create([
+            
+            'urlPicture' => $filename,
             'namePicture' => $request->namePicture,
-            'urlPicture' => $request->urlPicture,
             'childs_id' => $request->childs_id,
         ]);
         // On retourne les informations du nouveau message de contact en JSON
