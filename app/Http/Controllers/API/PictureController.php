@@ -59,7 +59,7 @@ class PictureController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'urlPicture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:3048',
+            'urlPicture' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'namePicture' => 'required|max:100',
             'childs_id' => 'required'
         ]);
@@ -73,11 +73,21 @@ class PictureController extends Controller
             $extension = $request->file('urlPicture')->getClientOriginalExtension();
             // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
             $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+
+
+            $filename = $request->file('urlPicture');
+            $filename = Picture::make($filename->path());
+            $filename->resize(100, 100, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save($request.'public/uploads'.$filename);
+
+
+
             // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
-            $path = $request->file('urlPicture')->storeAs('public/uploads', $filename);
-        } else {
-            $filename = Null;
-        }
+        //     $path = $request->file('urlPicture')->storeAs('public/uploads', $filename);
+        // } else {
+        //     $filename = Null;
+        // }
 
         // On crée une nouvelle photo
         $pictures = Picture::create([
