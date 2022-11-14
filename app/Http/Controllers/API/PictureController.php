@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Validator;
 
 class PictureController extends Controller
 {
@@ -59,8 +60,8 @@ class PictureController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'urlPicture' => 'required|image|mimes:jpg,jpeg,png,gif,svg|10000',
+        $validator = Validator::make($request->all(), [
+            'urlPicture' => 'required|image|mimes:jpg,jpeg,png,gif,svg',
             'namePicture' => 'required|max:100',
             'childs_id'
         ]);
@@ -69,7 +70,7 @@ class PictureController extends Controller
 
         $destinationPath = public_path('/thumbnail');
         $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(250, 250, function ($constraint) {
+        $imgFile->resize(1920, 1920, function ($constraint) {
             $constraint->aspectRatio();
         })->save($destinationPath . '/' . $input['urlPicture']);
         $destinationPath = public_path('/uploads');
