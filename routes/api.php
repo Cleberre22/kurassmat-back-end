@@ -46,7 +46,7 @@ Route::controller(PictureController::class)->group(function () {
     // Route::get('daysummary', 'index');
     // Route::get('daysummary/{daysummary}', 'show');
     // Route::patch('daysummary/{daysummary}', 'update');
-    // Route::delete('daysummary/{daysummary}', 'destroy');
+    Route::delete('pictures/{picture}', 'destroy');
 });
 
 // Route::controller(UserController::class)->group(function () {

@@ -70,7 +70,7 @@ class PictureController extends Controller
 
         $destinationPath = public_path('/thumbnail');
         $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(1920, 1920, function ($constraint) {
+        $imgFile->resize(800, 533, function ($constraint) {
             $constraint->aspectRatio();
         })->save($destinationPath . '/' . $input['urlPicture']);
         $destinationPath = public_path('/uploads');

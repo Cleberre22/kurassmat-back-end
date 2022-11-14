@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
 
 class ChildController extends Controller
@@ -67,31 +68,29 @@ class ChildController extends Controller
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
-            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'users_id' => 'required',
         ]);
 
-        $filename = "";
-        if ($request->hasFile('imageChild')) {
-            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
-            $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
-            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            // On récupère l'extension du fichier, résultat $extension : ".jpg"
-            $extension = $request->file('imageChild')->getClientOriginalExtension();
-            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
-            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
-            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
-            $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
-        } else {
-            $filename = Null;
-        }
+        $image = $request->file('imageChild');
+        $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('thumbnail');
+        // dd($destinationPath);
+        $imgFile = Image::make($image->getRealPath());
+        $imgFile->resize(1920, 1920, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath . '/' . $input['imageChild']);
+        $destinationPath = public_path('uploads');
+        
+        $image->move($destinationPath, $input['imageChild']);
+        // $image = $image -> move('uploads', $input['imageChild']);
 
         // On crée une nouvelle fiche "enfant"
         $childs = Child::create([
             'firstnameChild' => $request->firstnameChild,
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
-            'imageChild' => $filename,
+            'imageChild' => $input['imageChild'],
             'users_id' => $request->users_id,
         ]);
 
