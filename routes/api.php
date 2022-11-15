@@ -24,6 +24,8 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(ChildController::class)->group(function () {
     Route::patch('childUpdateImage/{child}', 'childUpdateImage');
     Route::get('childIndexAuth/{user}', 'childIndexAuth');
+    Route::get('childLastDaySummary/{child}', 'childLastDaySummary');
+
     Route::post('childs', 'store');
     Route::get('childs', 'index');
     Route::get('childs/{child}', 'show');

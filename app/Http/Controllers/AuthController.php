@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\Child;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','registerEmployer', 'registerAssmat']]);
+        $this->middleware('auth:api', ['except' => ['login', 'registerEmployer', 'registerAssmat']]);
     }
 
     public function login(Request $request)
@@ -33,17 +34,17 @@ class AuthController extends Controller
 
         $user = Auth::user();
         return response()->json([
-                'status' => 'success',
-                'user' => $user,
-                'token' => $token,
-            ]);
-
+            'status' => 'success',
+            'user' => $user,
+            'token' => $token,
+        ]);
     }
 
-     /**
+    /**
      * Fonction d'inscription pour l'employeur
      */
-    public function registerEmployer(Request $request){
+    public function registerEmployer(Request $request)
+    {
         $request->validate([
             'firstname' => 'required|string|max:100',
             'lastname' => 'required|string|max:100',
@@ -61,7 +62,7 @@ class AuthController extends Controller
             'childs_id' => $request->childs_id,
         ]);
 
-           //Comment remplir une table pivot 
+        //Comment remplir une table pivot 
         //Je récupère mes Users/Employer dans le formulaire
         $children = $request->childs_id;
 
@@ -89,7 +90,8 @@ class AuthController extends Controller
     /**
      * Fonction d'inscription pour l'assmat
      */
-    public function registerAssmat(Request $request){
+    public function registerAssmat(Request $request)
+    {
         $request->validate([
             'firstname' => 'required|string|max:100',
             'lastname' => 'required|string|max:100',
@@ -139,7 +141,7 @@ class AuthController extends Controller
     }
 
     public function currentUser()
-        {
-            return response()->json(Auth::user());
-        }
+    {
+        return response()->json(Auth::user());
+    }
 }

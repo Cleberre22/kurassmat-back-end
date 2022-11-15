@@ -121,7 +121,7 @@ class ChildController extends Controller
 
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
             ->join('users', 'users.id', '=', 'child_user.user_id')
-            ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
+            // ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
             // ->join('pictures', 'children.id', '=', 'pictures.childs_id')
 
 
@@ -133,7 +133,33 @@ class ChildController extends Controller
             // ->select('children.', 'users.', 'child_user.', 'day_summaries.*', 'pictures.*')
             ->select('children.', 'users.', 'child_user.', 'day_summaries.')
 
-            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id', 'day_summaries.contentDaySummary', 'day_summaries.created_at AS DSCreated_at')
+            // ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id', 'day_summaries.contentDaySummary', 'day_summaries.created_at AS DSCreated_at')
+            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
+
+            ->where('children.id', $child->id)
+            
+            // ->limit(1)
+
+            // ->orderByDesc('day_summaries.created_at')
+
+            ->get();
+
+        // On retourne les informations d'une fiche "enfant" en JSON
+        return response()->json([
+            'status' => 'Success',
+            'data' => $child,
+        ]);
+    }
+
+    public function childLastDaySummary(Child $child)
+    {
+        $child = DB::table('children')
+            
+            ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
+
+            ->select('children.', 'day_summaries.')
+
+            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'day_summaries.contentDaySummary', 'day_summaries.created_at AS DSCreated_at')
 
             ->where('children.id', $child->id)
             
