@@ -143,6 +143,36 @@ class ChildController extends Controller
             // ->orderByDesc('day_summaries.created_at')
 
             ->get();
+            
+
+        // On retourne les informations d'une fiche "enfant" en JSON
+        return response()->json([
+            'status' => 'Success',
+            'data' => $child,
+        ]);
+    }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Child  $child
+     * @return \Illuminate\Http\Response
+     */
+    public function childShowUser(Child $child)
+    {
+        $child = DB::table('children')
+
+            ->join('child_user', 'children.id', '=', 'child_user.child_id')
+            
+            ->join('users', 'users.id', '=', 'child_user.user_id')
+    
+            ->select('children.', 'users.', 'child_user.')
+
+            ->select('users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
+
+            ->where('children.id', $child->id)
+        
+            ->get();
 
         // On retourne les informations d'une fiche "enfant" en JSON
         return response()->json([
