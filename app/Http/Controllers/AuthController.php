@@ -51,7 +51,23 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:8',
             'childs_id' => 'required',
+            'imageUser' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
+
+        $filename = "";
+        if ($request->hasFile('imageUser')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+            $filenameWithExt = $request->file('imageUser')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('imageUser')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('imageUser')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
 
         $user = User::create([
             'firstname' => $request->firstname,
@@ -60,6 +76,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'childs_id' => $request->childs_id,
+            'imageUser' => $filename,
         ]);
 
         //Comment remplir une table pivot 
