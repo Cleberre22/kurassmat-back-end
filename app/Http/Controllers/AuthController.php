@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\User;
+use App\Models\Child;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -48,6 +49,7 @@ class AuthController extends Controller
             'lastname' => 'required|string|max:100',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:8',
+            'childs_id' => 'required',
         ]);
 
         $user = User::create([
@@ -56,7 +58,21 @@ class AuthController extends Controller
             'role' => "employer",
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'childs_id' => $request->childs_id,
         ]);
+
+           //Comment remplir une table pivot 
+        //Je récupère mes Users/Employer dans le formulaire
+        $children = $request->childs_id;
+
+        $childs_id = explode(",", $children);
+
+        //Et le boucle pour les rentrer dans la base de données
+        for ($i = 0; $i < count($childs_id); $i++) {
+            $child = Child::find($childs_id[$i]);
+            $user->children()->attach($child);
+        }
+
 
         $token = Auth::login($user);
         return response()->json([
