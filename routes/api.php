@@ -22,7 +22,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(ChildController::class)->group(function () {
-    Route::patch('childUpdateImage/{child}', 'childUpdateImage');
+    Route::patch('childUpdateImage/{child}', 'update');
     Route::get('childIndexAuth/{user}', 'childIndexAuth');
     Route::get('childLastDaySummary/{child}', 'childLastDaySummary');
     Route::get('childShowUser/{child}', 'childShowUser');

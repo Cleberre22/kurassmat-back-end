@@ -61,7 +61,7 @@ class PictureController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'urlPicture' => 'required|image|mimes:jpg,jpeg,png,gif,svg',
+            'urlPicture' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:10000',
             'namePicture' => 'required|max:100',
             'childs_id'
         ]);
@@ -70,7 +70,7 @@ class PictureController extends Controller
 
         $destinationPath = public_path('/thumbnail');
         $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(800, 533, function ($constraint) {
+        $imgFile->resize(1200, 1200, function ($constraint) {
             $constraint->aspectRatio();
         })->save($destinationPath . '/' . $input['urlPicture']);
         $destinationPath = public_path('/uploads');

@@ -68,7 +68,7 @@ class ChildController extends Controller
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
-            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
             'users_id' => 'required',
         ]);
 
@@ -77,12 +77,11 @@ class ChildController extends Controller
         $destinationPath = public_path('thumbnail');
         // dd($destinationPath);
         $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(1920, 1920, function ($constraint) {
+        $imgFile->resize(1200, 1200, function ($constraint) {
             $constraint->aspectRatio();
         })->save($destinationPath . '/' . $input['imageChild']);
         $destinationPath = public_path('uploads');
         $image->move($destinationPath, $input['imageChild']);
-        // $image = $image -> move('uploads', $input['imageChild']);
 
         // On crée une nouvelle fiche "enfant"
         $childs = Child::create([
@@ -120,31 +119,17 @@ class ChildController extends Controller
         $child = DB::table('children')
 
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
+
             ->join('users', 'users.id', '=', 'child_user.user_id')
-            // ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
-            // ->join('pictures', 'children.id', '=', 'pictures.childs_id')
-
-
-            // ->join('child_person_to_contact', 'children.id', '=', 'child_person_to_contact.child_id')
-            // ->join('person_to_contacts', 'person_to_contacts.id', '=', 'child_person_to_contact.person_to_contact_id')
-
-            // ->select('children.', 'users.', 'child_user.', 'day_summaries.', 'person_to_contacts.')
-
-            // ->select('children.', 'users.', 'child_user.', 'day_summaries.*', 'pictures.*')
+        
             ->select('children.', 'users.', 'child_user.', 'day_summaries.')
 
-            // ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id', 'day_summaries.contentDaySummary', 'day_summaries.created_at AS DSCreated_at')
             ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
 
             ->where('children.id', $child->id)
-            
-            // ->limit(1)
-
-            // ->orderByDesc('day_summaries.created_at')
 
             ->get();
             
-
         // On retourne les informations d'une fiche "enfant" en JSON
         return response()->json([
             'status' => 'Success',
@@ -221,33 +206,15 @@ class ChildController extends Controller
             'birthDate' => 'required',
         ]);
 
-        // $filename = "";
-        // if ($request->hasFile('imageChild')) {
-        //     // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
-        //     $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
-        //     $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-        //     // On récupère l'extension du fichier, résultat $extension : ".jpg"
-        //     $extension = $request->file('imageChild')->getClientOriginalExtension();
-        //     // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
-        //     $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
-        //     // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
-        //     $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
-        // } else {
-        //     $filename = Null;
-        // }
-
         // On modifie la fiche "enfant"
         $child->update([
             'firstnameChild' => $request->firstnameChild,
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
-            // 'imageChild' => $filename,
         ]);
 
         // On retourne les informations du sondage modifié en JSON
-        return response()->json([
-            'status' => 'Fiche "enfant" mise à jour avec succès'
-        ]);
+        return response()->json($child, 201);
     }
 
     /**
@@ -257,31 +224,27 @@ class ChildController extends Controller
      * @param  \App\Models\Child  $childImage
      * @return \Illuminate\Http\Response
      */
-    public function childUpdateImage(Request $request, Child $childImage)
+    public function childUpdateImage(Request $request, Child $child)
     {
-        // dd($childImage);
+        // dd($child);
         $this->validate($request, [
-            'lastnameChild' => 'required|max:100',
-            // 'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096'
+            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
         ]);
 
-        // $filename = "";
-        // if ($request->hasFile('imageChild')) {
-        //     // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
-        //     $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
-        //     $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-        //     // On récupère l'extension du fichier, résultat $extension : ".jpg"
-        //     $extension = $request->file('imageChild')->getClientOriginalExtension();
-        //     // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
-        //     $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
-        //     // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
-        //     $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
-        // }
+        $image = $request->file('imageChild');
+        $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('thumbnail');
+        // dd($destinationPath);
+        $imgFile = Image::make($image->getRealPath());
+        $imgFile->resize(1200, 1200, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath . '/' . $input['imageChild']);
+        $destinationPath = public_path('uploads');
+        $image->move($destinationPath, $input['imageChild']);
 
         // On modifie la fiche "enfant"
-        $childImage->childUpdateImage([
-            'lastnameChild' => $request->lastnameChild,
-            // 'imageChild' => $filename,
+        $child->childUpdateImage([
+           'imageChild' => $input['imageChild'],
         ]);
 
         // On retourne les informations du sondage modifié en JSON
