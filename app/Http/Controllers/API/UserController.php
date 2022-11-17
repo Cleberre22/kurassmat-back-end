@@ -62,23 +62,23 @@ class UserController extends Controller
             'postalCode' => 'required|string|max:5',
             'city' => 'required|string|max:100',
             'phone' => 'required|string|max:100',
-            'imageUser' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            // 'imageUser' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
-        $filename = "";
-        if ($request->hasFile('imageUser')) {
-            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
-            $filenameWithExt = $request->file('imageUser')->getClientOriginalName();
-            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            // On récupère l'extension du fichier, résultat $extension : ".jpg"
-            $extension = $request->file('imageUser')->getClientOriginalExtension();
-            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
-            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
-            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
-            $path = $request->file('imageUser')->storeAs('public/uploads', $filename);
-        } else {
-            $filename = Null;
-        }
+        // $filename = "";
+        // if ($request->hasFile('imageUser')) {
+        //     // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+        //     $filenameWithExt = $request->file('imageUser')->getClientOriginalName();
+        //     $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+        //     // On récupère l'extension du fichier, résultat $extension : ".jpg"
+        //     $extension = $request->file('imageUser')->getClientOriginalExtension();
+        //     // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"jeanmiche_20220422.jpg"
+        //     $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+        //     // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+        //     $path = $request->file('imageUser')->storeAs('public/uploads', $filename);
+        // } else {
+        //     $filename = Null;
+        // }
 
         // On modifie l'utilisateur
         $user->update([
@@ -89,7 +89,7 @@ class UserController extends Controller
             'postalCode' => $request->postalCode,
             'city' => $request->city,
             'phone' => $request->phone,  
-            'imageUser' => $filename,
+            // 'imageUser' => $filename,
         ]);
         // On retourne les informations du sondage modifié en JSON
         return response()->json([

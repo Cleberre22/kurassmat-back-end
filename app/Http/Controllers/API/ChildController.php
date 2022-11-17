@@ -178,9 +178,34 @@ class ChildController extends Controller
 
             ->where('children.id', $child->id)
             
-            ->limit(1)
+            ->limit(3)
 
             ->orderByDesc('day_summaries.created_at')
+
+            ->get();
+
+        // On retourne les informations d'une fiche "enfant" en JSON
+        return response()->json([
+            'status' => 'Success',
+            'data' => $child,
+        ]);
+    }
+
+    public function childLastPicture(Child $child)
+    {
+        $child = DB::table('children')
+            
+            ->join('pictures', 'children.id', '=', 'pictures.childs_id')
+
+            ->select('children.', 'pictures.')
+
+            ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'pictures.urlPicture', 'pictures.namePicture', 'pictures.created_at AS PicCreated_at', 'pictures.childs_id')
+
+            ->where('children.id', $child->id)
+            
+            ->limit(3)
+
+            ->orderByDesc('pictures.created_at')
 
             ->get();
 
