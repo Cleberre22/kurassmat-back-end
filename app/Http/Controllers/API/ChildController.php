@@ -47,6 +47,8 @@ class ChildController extends Controller
 
         ->where('child_user.user_id', '=', $id)
 
+        ->orderBy('children.lastnameChild')
+
         ->get();
        
         // On retourne les informations des utilisateurs en JSON
@@ -71,7 +73,7 @@ class ChildController extends Controller
             'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
             'users_id' => 'required',
         ]);
-
+dd($request);
         $image = $request->file('imageChild');
         $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
         $destinationPath = public_path('thumbnail');
@@ -229,13 +231,27 @@ class ChildController extends Controller
             'firstnameChild' => 'required|max:100',
             'lastnameChild' => 'required|max:100',
             'birthDate' => 'required',
+            // 'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
         ]);
+
+        // $image = $request->file('imageChild');
+        // dd($request);
+        // $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
+        // $destinationPath = public_path('thumbnail');
+        // // dd($destinationPath);
+        // $imgFile = Image::make($image->getRealPath());
+        // $imgFile->resize(1200, 1200, function ($constraint) {
+        //     $constraint->aspectRatio();
+        // })->save($destinationPath . '/' . $input['imageChild']);
+        // $destinationPath = public_path('uploads');
+        // $image->move($destinationPath, $input['imageChild']);
 
         // On modifie la fiche "enfant"
         $child->update([
             'firstnameChild' => $request->firstnameChild,
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
+            // 'imageChild' => $input['imageChild'],
         ]);
 
         // On retourne les informations du sondage modifié en JSON
@@ -257,6 +273,7 @@ class ChildController extends Controller
         ]);
 
         $image = $request->file('imageChild');
+        dd($request);
         $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
         $destinationPath = public_path('thumbnail');
         // dd($destinationPath);
@@ -271,7 +288,7 @@ class ChildController extends Controller
         $child->childUpdateImage([
            'imageChild' => $input['imageChild'],
         ]);
-
+        
         // On retourne les informations du sondage modifié en JSON
         return response()->json([
             'status' => 'Photo "enfant" mise à jour avec succès'

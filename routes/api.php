@@ -22,16 +22,14 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(ChildController::class)->group(function () {
-    Route::patch('childUpdateImage/{child}', 'update');
+    Route::patch('childUpdateImage/{child}', 'childUpdateImage');
+    Route::patch('childs/{child}', 'update');
     Route::get('childIndexAuth/{user}', 'childIndexAuth');
     Route::get('childLastDaySummary/{child}', 'childLastDaySummary');
     Route::get('childShowUser/{child}', 'childShowUser');
-
-
     Route::post('childs', 'store');
     Route::get('childs', 'index');
     Route::get('childs/{child}', 'show');
-    Route::patch('childs/{child}', 'update');
     Route::delete('childs/{child}', 'destroy');
 });
 
@@ -52,22 +50,6 @@ Route::controller(PictureController::class)->group(function () {
     // Route::patch('daysummary/{daysummary}', 'update');
     Route::delete('pictures/{picture}', 'destroy');
 });
-
-// Route::controller(UserController::class)->group(function () {
-//     Route::get('users', 'index');
-//     Route::post('user', 'store');
-//     Route::get('user/{id}', 'show');
-//     Route::put('user/{id}', 'update');
-//     Route::delete('user/{id}', 'destroy');
-// });
-
-// Route::controller(ChildController::class)->group(function () {
-//     Route::put('childs/{id}', 'updateImage');
-// });
-
-// Route::apiResource("pictures", PictureController::class);
-
-// Route::apiResource("daysummary", DaySummaryController::class);
 
 Route::apiResource("users", UserController::class);
 
