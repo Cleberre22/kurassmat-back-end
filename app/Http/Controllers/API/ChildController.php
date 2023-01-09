@@ -30,7 +30,7 @@ class ChildController extends Controller
         ]);
     }
 
-       /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -39,18 +39,18 @@ class ChildController extends Controller
     {
         $children = DB::table('children')
 
-        ->join('child_user', 'children.id', '=', 'child_user.child_id')
-        
-        ->join('users', 'users.id', '=', 'child_user.user_id')
+            ->join('child_user', 'children.id', '=', 'child_user.child_id')
 
-        ->select('children.*', 'users.*', 'child_user.*')
+            ->join('users', 'users.id', '=', 'child_user.user_id')
 
-        ->where('child_user.user_id', '=', $id)
+            ->select('children.*', 'users.*', 'child_user.*')
 
-        ->orderBy('children.lastnameChild')
+            ->where('child_user.user_id', '=', $id)
 
-        ->get();
-       
+            ->orderBy('children.lastnameChild')
+
+            ->get();
+
         // On retourne les informations des utilisateurs en JSON
         return response()->json([
             'status' => 'Success',
@@ -73,24 +73,28 @@ class ChildController extends Controller
             'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
             'users_id' => 'required',
         ]);
-dd($request);
-        $image = $request->file('imageChild');
-        $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
-        $destinationPath = public_path('thumbnail');
-        // dd($destinationPath);
-        $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(1200, 1200, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($destinationPath . '/' . $input['imageChild']);
-        $destinationPath = public_path('uploads');
-        $image->move($destinationPath, $input['imageChild']);
+
+        $filename = "";
+        if ($request->hasFile('imageChild')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "imageExemple.jpg"
+            $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('imageChild')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"imageExemple_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
 
         // On crée une nouvelle fiche "enfant"
         $childs = Child::create([
             'firstnameChild' => $request->firstnameChild,
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
-            'imageChild' => $input['imageChild'],
+            'imageChild' => $filename,
             'users_id' => $request->users_id,
         ]);
 
@@ -123,7 +127,7 @@ dd($request);
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
 
             ->join('users', 'users.id', '=', 'child_user.user_id')
-        
+
             ->select('children.', 'users.', 'child_user.', 'day_summaries.')
 
             ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
@@ -131,7 +135,7 @@ dd($request);
             ->where('children.id', $child->id)
 
             ->get();
-            
+
         // On retourne les informations d'une fiche "enfant" en JSON
         return response()->json([
             'status' => 'Success',
@@ -139,7 +143,7 @@ dd($request);
         ]);
     }
 
-        /**
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Child  $child
@@ -150,15 +154,15 @@ dd($request);
         $child = DB::table('children')
 
             ->join('child_user', 'children.id', '=', 'child_user.child_id')
-            
+
             ->join('users', 'users.id', '=', 'child_user.user_id')
-    
+
             ->select('children.', 'users.', 'child_user.')
 
             ->select('users.id', 'users.firstname', 'users.lastname', 'users.role', 'users.email', 'users.address', 'users.postalCode', 'users.city', 'users.phone', 'child_user.id')
 
             ->where('children.id', $child->id)
-        
+
             ->get();
 
         // On retourne les informations d'une fiche "enfant" en JSON
@@ -171,7 +175,7 @@ dd($request);
     public function childLastDaySummary(Child $child)
     {
         $child = DB::table('children')
-            
+
             ->join('day_summaries', 'children.id', '=', 'day_summaries.childs_id')
 
             ->select('children.', 'day_summaries.')
@@ -179,7 +183,7 @@ dd($request);
             ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'day_summaries.contentDaySummary', 'day_summaries.created_at AS DSCreated_at')
 
             ->where('children.id', $child->id)
-            
+
             ->limit(3)
 
             ->orderByDesc('day_summaries.created_at')
@@ -196,7 +200,7 @@ dd($request);
     public function childLastPicture(Child $child)
     {
         $child = DB::table('children')
-            
+
             ->join('pictures', 'children.id', '=', 'pictures.childs_id')
 
             ->select('children.', 'pictures.')
@@ -204,7 +208,7 @@ dd($request);
             ->select('children.id AS idChild', 'children.firstnameChild', 'children.lastnameChild', 'children.birthDate', 'children.imageChild', 'pictures.urlPicture', 'pictures.namePicture', 'pictures.created_at AS PicCreated_at', 'pictures.childs_id')
 
             ->where('children.id', $child->id)
-            
+
             ->limit(3)
 
             ->orderByDesc('pictures.created_at')
@@ -286,9 +290,9 @@ dd($request);
 
         // On modifie la fiche "enfant"
         $child->childUpdateImage([
-           'imageChild' => $input['imageChild'],
+            'imageChild' => $input['imageChild'],
         ]);
-        
+
         // On retourne les informations du sondage modifié en JSON
         return response()->json([
             'status' => 'Photo "enfant" mise à jour avec succès'
