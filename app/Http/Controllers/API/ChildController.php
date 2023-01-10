@@ -238,65 +238,31 @@ class ChildController extends Controller
             // 'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
         ]);
 
-        // $image = $request->file('imageChild');
-        // dd($request);
-        // $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
-        // $destinationPath = public_path('thumbnail');
-        // // dd($destinationPath);
-        // $imgFile = Image::make($image->getRealPath());
-        // $imgFile->resize(1200, 1200, function ($constraint) {
-        //     $constraint->aspectRatio();
-        // })->save($destinationPath . '/' . $input['imageChild']);
-        // $destinationPath = public_path('uploads');
-        // $image->move($destinationPath, $input['imageChild']);
+        $filename = "";
+        if ($request->hasFile('imageChild')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "imageExemple.jpg"
+            $filenameWithExt = $request->file('imageChild')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('imageChild')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"imageExemple_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('imageChild')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
 
         // On modifie la fiche "enfant"
         $child->update([
             'firstnameChild' => $request->firstnameChild,
             'lastnameChild' => $request->lastnameChild,
             'birthDate' => $request->birthDate,
-            // 'imageChild' => $input['imageChild'],
+            'imageChild' => $filename,
         ]);
 
         // On retourne les informations du sondage modifié en JSON
         return response()->json($child, 201);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Child  $childImage
-     * @return \Illuminate\Http\Response
-     */
-    public function childUpdateImage(Request $request, Child $child)
-    {
-        // dd($child);
-        $this->validate($request, [
-            'imageChild' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
-        ]);
-
-        $image = $request->file('imageChild');
-        dd($request);
-        $input['imageChild'] = time() . '.' . $image->getClientOriginalExtension();
-        $destinationPath = public_path('thumbnail');
-        // dd($destinationPath);
-        $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(1200, 1200, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($destinationPath . '/' . $input['imageChild']);
-        $destinationPath = public_path('uploads');
-        $image->move($destinationPath, $input['imageChild']);
-
-        // On modifie la fiche "enfant"
-        $child->childUpdateImage([
-            'imageChild' => $input['imageChild'],
-        ]);
-
-        // On retourne les informations du sondage modifié en JSON
-        return response()->json([
-            'status' => 'Photo "enfant" mise à jour avec succès'
-        ]);
     }
 
     /**

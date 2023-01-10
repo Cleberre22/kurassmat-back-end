@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Child extends Model
 {
     use HasFactory;
-    protected $fillable = ['firstnameChild', 'lastnameChild', 'birthDate', 'imageChild', 'user_id'];
+    protected $fillable = [
+        'firstnameChild', 
+        'lastnameChild', 
+        'birthDate', 
+        'imageChild', 
+        'user_id'
+    ];
 
     public function users()
     {
