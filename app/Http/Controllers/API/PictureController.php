@@ -65,24 +65,25 @@ class PictureController extends Controller
             'namePicture' => 'required|max:100',
             'childs_id'
         ]);
-        $image = $request->file('urlPicture');
-        $input['urlPicture'] = time() . '.' . $image->getClientOriginalExtension();
 
-        $destinationPath = public_path('/thumbnail');
-        $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(1200, 1200, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($destinationPath . '/' . $input['urlPicture']);
-        $destinationPath = public_path('/uploads');
-        $image->move($destinationPath, $input['urlPicture']);
-        // return back()
-        // 	->with('success','Image has successfully uploaded.')
-        // 	->with('fileName',$input['urlPicture']);
-        // dd($image);
+        $filename = "";
+        if ($request->hasFile('urlPicture')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "imageExemple.jpg"
+            $filenameWithExt = $request->file('urlPicture')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('urlPicture')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore :"imageExemple_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('urlPicture')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
 
         // On crée une nouvelle photo
         $image = Picture::create([
-            'urlPicture' => $input['urlPicture'],
+            'urlPicture' => $filename,
             'namePicture' => $request->namePicture,
             'childs_id' => $request->childs_id,
         ]);
