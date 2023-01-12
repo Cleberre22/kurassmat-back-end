@@ -109,7 +109,7 @@ class ChildController extends Controller
         }
 
         // On retourne les informations du nouveau message de contact en JSON
-        return response()->json($childs, 201);
+        return response()->json($childs, 200);
     }
 
     /**

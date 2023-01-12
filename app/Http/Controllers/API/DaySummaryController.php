@@ -80,7 +80,7 @@ class DaySummaryController extends Controller
             'users_id' => $request->users_id,
         ]);
         // On retourne les informations du nouveau message de contact en JSON
-        return response()->json($daySummarys, 201);
+        return response()->json($daySummarys, 200);
     }
 
     /**
